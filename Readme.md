@@ -111,3 +111,11 @@
 - Hourly
 - Daily (default)
 - Monthly
+
+### Credentials Management
+
+- Airflow will need S3 and Redshift credentials to access and process data
+- S3 access keys and redshift dw credentials can be securely saved in Airflow
+- Airflow encrypts passwords internally making it safe
+- Alternate option could be using AWS secrets manager
+
