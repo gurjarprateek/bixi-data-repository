@@ -23,7 +23,10 @@ default_args = {
 }
 
 dag = DAG(
-    'Historical', default_args=default_args, description= 'desc', schedule_interval='@once')
+    'Historical', 
+    default_args=default_args, 
+    description= 'Ingests historical trips and stations data since 2014', 
+    schedule_interval='@once')
 
 start = DummyOperator(task_id='Start', dag=dag)
 
@@ -35,23 +38,32 @@ ingest_station_tasks = []
 
 for year in year_list:
 
-    #if year==2014:
-
     dummy = DummyOperator(task_id=f'Ingestion_Initializer_{year}', dag=dag)
 
     dummy_tasks.append(dummy)
 
     url = f'https://montreal.bixi.com/c/bixi/file_db/data_all.file/BixiMontrealRentals{year}.zip'
 
-    t = PythonOperator(task_id=f'Ingest_Trips_{year}', python_callable=load_historical, provide_context=True, op_kwargs = {'url':url, 'bucket_name':'bixi.qc.raw', 'load':'trips'}, dag=dag)
+    t = PythonOperator(
+        task_id=f'Ingest_Trips_{year}', 
+        python_callable=load_historical, 
+        provide_context=True, 
+        op_kwargs = {'url':url, 'bucket_name':'bixi.qc.raw', 'load':'trips'}, 
+        dag=dag)
 
     ingest_trips_tasks.append(t)
 
-    s = PythonOperator(task_id=f'Ingest_Stations_{year}', python_callable=load_historical, provide_context=True, op_kwargs = {'url':url, 'bucket_name':'bixi.qc.raw', 'load':'stations'}, dag=dag)
+    s = PythonOperator(
+        task_id=f'Ingest_Stations_{year}', 
+        python_callable=load_historical, 
+        provide_context=True, 
+        op_kwargs = {'url':url, 'bucket_name':'bixi.qc.raw', 'load':'stations'}, 
+        dag=dag)
 
     ingest_station_tasks.append(s)
 
 
 for i in range(0, len(dummy_tasks)):
+    
     start >> dummy_tasks[i] >>ingest_trips_tasks[i]
     start >> dummy_tasks[i] >>ingest_station_tasks[i]
