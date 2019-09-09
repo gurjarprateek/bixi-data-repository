@@ -21,7 +21,7 @@ def dataframe_to_s3(s3_client, input_datafame, bucket_name, file_info, format):
 
 	elif format == 'csv':
 		out_buffer = StringIO()
-		input_datafame.to_parquet(out_buffer, index=False)
+		input_datafame.to_csv(out_buffer, index=False)
 
 	else:
 		print("Undefined or No format defined")
@@ -32,16 +32,14 @@ def dataframe_to_s3(s3_client, input_datafame, bucket_name, file_info, format):
 	s3_client.put_object(Bucket=bucket_name, Key=filepath, Body=out_buffer.getvalue())
 	print(f'{filename} successfully loaded to s3')
 
-endpoint = 'station_status'
-
 def ingest_stations(**kwargs):
 
 	endpoint = kwargs['endpoint']
 
-	station_status_api = f'https://api-core.bixi.com/gbfs/en/{endpoint}.json'
+	endpoint_api = f'https://api-core.bixi.com/gbfs/en/{endpoint}.json'
 
 	try:
-		station_status_response = requests.get(station_status_api)
+		station_status_response = requests.get(endpoint_api)
 	except:
 		print("issue with python calling api endpoint")
 
@@ -74,11 +72,11 @@ def ingest_stations(**kwargs):
 	else:
 		min_bucket = str((minute//5)*5)
 
-	filename = f'{endpoint}_{last_updated}.parquet'
+	filename = f'{endpoint}_{last_updated}'
 	filepath = f'station/{endpoint}/{year}/{month}/{day}/{hour}/{min_bucket}/{filename}'
 	bucket_name = 'bixi.qc.staged'
 	file_info = (filename, filepath)
-	dataframe_to_s3(s3_client, df, bucket_name, file_info, 'parquet')
+	dataframe_to_s3(s3_client, df, bucket_name, file_info, 'csv')
 
 if __name__ == '__main__':
 	
