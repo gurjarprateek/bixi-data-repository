@@ -8,7 +8,7 @@ default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     'catchup':False,
-    'start_date': datetime(2019, 9, 1),
+    'start_date': datetime(2019, 9, 8),
     'email': ['airflow@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
