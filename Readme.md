@@ -12,21 +12,19 @@
     - stations.json
   - Create a data model and schema design for ETL 
     - Excel spreadsheet which lists tables, columns and datatypes
-    - Dimensional model showing trips, station, calendar and time tables with relationships
-  - Code logic to clean data, convert to parquet and dump in S3 buckets
-    - Jupyter notebook used to create POC
+    - Dimensional model showing trips, station information, station status, calendar with relationships
+  - Code logic to ingest api data, clean it, convert to csv and dump in S3 buckets
     - Python scripts used as tasks by airflow
   - Manual steps to create Glue Crawlers to create data catalogue
   - Create scripts for external schema in redshift to which points to Glue Data Catalog
   - Create scripts for dimension and fact tables in redshift adhering to data model and schema
-  - Write ETL logic to populate fact and dimension tables on a schedule
+  - Write Copy statements to populate fact and dimension tables on a schedule
   - Automate the process using Airflow
     - Create dags script
     - Create task scripts for data cleaning and parquet conversion
     - Create task script to execute ETL operations on redshift
-    - Create airflow variables
     - Other helper functions
-
+  
 - Purpose of Final Data Model
   - Data model to report on trip durations sliced by month/period of day/year
   - Performance comparison of stations
@@ -72,7 +70,6 @@
 
     - dim_station (data for general station info)
     - dim_calendar (calendar data for day, month, year, holidays, week)
-    - dim_time (time data for hours, minutes, period (day, night, afternoon), happy hours etc)
 
 ## Execution
 
